@@ -38,13 +38,12 @@ const App = () => {
 
   const toggleImportance = (note) => {
     const url = `http://localhost:3001/notes/${note.id}`
-    const noteObject = {
-      ...note,
-      important: !note.important
-    }
 
     axios
-      .put(url, noteObject)
+      .put(url, {
+        ...note,
+        important: !note.important
+      })
       .then(response => {
         setNotes(notes.map(n => n.id == note.id ? response.data : n))
       })
