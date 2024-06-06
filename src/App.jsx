@@ -36,13 +36,27 @@ const App = () => {
       })
   }
 
+  const toggleImportance = (note) => {
+    const url = `http://localhost:3001/notes/${note.id}`
+    const noteObject = {
+      ...note,
+      important: !note.important
+    }
+
+    axios
+      .put(url, noteObject)
+      .then(response => {
+        setNotes(notes.map(n => n.id == note.id ? response.data : n))
+      })
+  }
+
   return (
     <div>
       <h1>Notes</h1>
       <NewNote onHandleNewNote={handleNewNote} onHandleAddNote={addNote} />
       <ul>
         {notes.map(note =>
-          <Note key={note.id} note={note} />
+          <Note key={note.id} note={note} toggleImportance={() => toggleImportance(note)} />
         )}
       </ul>
     </div>
