@@ -9,6 +9,16 @@
       "id": "9d39",
       "content": "JS is easy",
       "important": false
+    },
+    {
+      "id": "4988",
+      "content": "CSS is for styles",
+      "important": true
+    },
+    {
+      "id": "891f",
+      "content": "React is not a framework",
+      "important": false
     }
   ]
 }
