@@ -45,6 +45,10 @@ const App = () => {
             .then((newNote) => {
                 setNotes(notes.map((n) => (n.id == note.id ? newNote : n)))
             })
+            .catch(error => {
+                alert(`the note ${note.content} doesn't exist on the server`)
+                setNotes(notes.filter(n => n.id != note.id))
+            })
     }
 
     return (
