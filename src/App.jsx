@@ -2,6 +2,7 @@
 import noteService from './services/notes'
 
 // components
+import Notification from './components/Notification'
 import NewNote from './components/NewNote'
 import Note from './components/Note'
 
@@ -11,6 +12,7 @@ import { useEffect, useState } from 'react'
 const App = () => {
     const [notes, setNotes] = useState([])
     const [newNote, setNewNote] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
 
     useEffect(() => {
         noteService.getAll().then((initialNotes) => {
@@ -46,7 +48,12 @@ const App = () => {
                 setNotes(notes.map((n) => (n.id == note.id ? newNote : n)))
             })
             .catch(error => {
-                alert(`the note ${note.content} doesn't exist on the server`)
+                setErrorMessage(
+                    `Note ${note.content} was already removed from the server`
+                )
+                setTimeout(() => {
+                    setErrorMessage('')
+                }, 3000);
                 setNotes(notes.filter(n => n.id != note.id))
             })
     }
@@ -54,6 +61,7 @@ const App = () => {
     return (
         <div>
             <h1>Notes</h1>
+            <Notification message={errorMessage} />
             <NewNote onHandleNewNote={handleNewNote} onHandleAddNote={addNote} />
             <ul>
                 {notes.map((note) => (
