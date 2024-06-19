@@ -5,14 +5,9 @@ if (process.argv.length < 3) {
     process.exit(1);
 }
 
-// La contraseña para la conexion a la base de datos es proporcionada como parametro al ejecutar el programa `$node mongo.js <password>`
 const password = process.argv[2]
 const databaseName = "notesApp"
 
-/**
- * La contraseña es añadida a la cadena de conexion `<username>:<password>`.
- * El nombre de la base de datos personalizado se añade la URI antes de `?retryWrites`.
- */
 const url = `mongodb+srv://martindotdev:${password}@fullstackopencluster.asrmplj.mongodb.net/${databaseName}?retryWrites=true&w=majority&appName=FullStackOpenCluster`
 
 mongoose.set("strictQuery", false)
