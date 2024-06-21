@@ -21,6 +21,28 @@ app.get('/api/notes', (req, res) => {
         })
 })
 
+app.post('/api/notes', (req, res) => {
+    const body = req.body?.content
+
+    if (body) {
+        const note = new Note({
+            content: body,
+            important: body.important || false
+        })
+
+        note.save()
+            .then(result => {
+                console.log('note saved')
+                res.json(result)
+            })
+            .catch(error => {
+                res.status(400).json({error: "the note cannot be saved"})
+            })
+    } else {
+        res.status(400).json({error: "content field is required"})
+    }
+})
+
 app.get('/api/notes/:id', (req, res) => {
     singleNote = notes.find(note => note.id === Number(req.params.id))
     res.json(singleNote)
