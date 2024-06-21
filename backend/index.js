@@ -44,8 +44,11 @@ app.post('/api/notes', (req, res) => {
 })
 
 app.get('/api/notes/:id', (req, res) => {
-    singleNote = notes.find(note => note.id === Number(req.params.id))
-    res.json(singleNote)
+    // el metodo findById() permite obtener un recurso individual a traves de su id
+    Note.findById(req.params.id)
+        .then(result => {
+            res.json(result)
+        })
 })
 
 const PORT = process.env.PORT

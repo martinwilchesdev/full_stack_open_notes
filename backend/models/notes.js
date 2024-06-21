@@ -12,15 +12,15 @@ mongoose.connect(url)
         console.log('error to connect db', error.message)
     })
 
-const noteSchema = mongoose.Schema({
+const noteSchema = new mongoose.Schema({
     content: String,
     important: Boolean
 })
 
 noteSchema.set('toJSON', {
     transform: (document, obj) => {
-        obj.id = obj._id.toString(),
-        delete obj._id,
+        obj.id = obj._id.toString()
+        delete obj._id
         delete obj.__v
     }
 })
