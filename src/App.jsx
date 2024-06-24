@@ -58,6 +58,15 @@ const App = () => {
             })
     }
 
+    const deleteNote = (note) => {
+        noteService.remove(note.id)
+            .then(status => {
+                if (status === 204) {
+                    setNotes(notes.filter(n => n.id != note.id))
+                }
+            })
+    }
+
     return (
         <div>
             <h1>Notes</h1>
@@ -69,6 +78,7 @@ const App = () => {
                         key={note.id}
                         note={note}
                         toggleImportance={() => toggleImportance(note)}
+                        deleteNote={() => deleteNote(note)}
                     />
                 ))}
             </ul>
