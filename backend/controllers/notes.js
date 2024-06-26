@@ -64,12 +64,13 @@ notesRouter.delete('/:id', (req, res) => {
         })
 })
 
-notesRouter.get('/:id', (req, res) => {
+notesRouter.get('/:id', (req, res, next) => {
     // el metodo findById() permite obtener un recurso individual a traves de su id
     Note.findById(req.params.id)
         .then(result => {
             res.json(result)
         })
+        .catch(error => next(error))
 })
 
 module.exports = notesRouter
