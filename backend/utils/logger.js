@@ -1,11 +1,11 @@
 const info = (...params) => {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== 'testing') {
         console.log(...params)
     }
 }
 
 const error = (...params) => {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== 'testing') {
         console.log(...params)
     }    
 }
