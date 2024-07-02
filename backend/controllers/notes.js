@@ -1,4 +1,5 @@
 const notesRouter = require('express').Router()
+const logger = require('../utils/logger')
 const Note = require('../models/notes')
 
 notesRouter.get('/', async(req, res) => {
@@ -6,7 +7,7 @@ notesRouter.get('/', async(req, res) => {
     res.json(notes)
 })
 
-notesRouter.post('/', (req, res) => {
+notesRouter.post('/', async(req, res) => {
     const body = req.body?.content
 
     if (body) {
@@ -15,14 +16,8 @@ notesRouter.post('/', (req, res) => {
             important: body.important || false
         })
 
-        note.save()
-            .then(result => {
-                console.log('note saved')
-                res.json(result)
-            })
-            .catch(error => {
-                res.status(400).json({error: "the note cannot be saved"})
-            })
+        const savedNote = await note.save()
+        res.status(201).json(savedNote)
     } else {
         res.status(400).json({error: "content field is required"})
     }
@@ -42,7 +37,7 @@ notesRouter.put('/:id', (req, res) => {
         .then(response => {
             // El argumento {new: true} permite que la respuesta obtenga el nuevo documento modificado en lugar del original sin modificaciones
             if (response) {
-                console.log('note updated')
+                logger.info('note updated')
                 res.json(response)
             } else {
                 res.status(500).end()
@@ -54,11 +49,11 @@ notesRouter.delete('/:id', (req, res) => {
     // el metodo findByIdAndDelete permite obtener un recurso individual a traves de su id y posteriormente eliminarlo
     Note.findByIdAndDelete(req.params.id)
         .then(result => {
-            console.log('note deleted')
+            logger.info('note deleted')
             res.status(204).end()
         })
         .catch(error => {
-            console.log('Error:', error.message)
+            logger.error('Error:', error.message)
         })
 })
 
