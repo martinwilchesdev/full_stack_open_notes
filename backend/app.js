@@ -1,3 +1,6 @@
+// La libreria express-async-errors permite eliminar los bloques try/catch. Si ocurre una excepcion en una ruta de controlador async, la ejecucion se pasa automaticamente al middleware de manejo de errores
+require('express-async-errors')
+
 const notesRouter = require('./controllers/notes')
 
 const middleware = require('./utils/middleware')
