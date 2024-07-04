@@ -13,7 +13,7 @@ const api = supertest(app)
 
 test('there are two notes', async() => {
     const response = await api.get('/api/notes')
-    
+
     assert.strictEqual(response.body.length, helper.initialNotes.length)
 })
 
@@ -44,9 +44,9 @@ test('a valid note can be added', async() => {
         .expect('Content-Type', /application\/json/)
 
     const notesAtEnd = await helper.notesInDb()
-    const contents = notesAtEnd.body.map(r => r.content)
+    const contents = notesAtEnd.map(r => r.content)
 
-    assert.strictEqual(notesAtEnd.body.length, helper.initialNotes.length + 1)
+    assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1)
     assert(contents.includes('async/await simplified asynchronous tasks'))
 })
 
@@ -63,10 +63,37 @@ test('note without content is added', async() => {
 
     const notesAtEnd = await helper.notesInDb()
 
-    assert.strictEqual(notesAtEnd.body.length, helper.initialNotes.length)
+    assert.strictEqual(notesAtEnd.length, helper.initialNotes.length)
 })
 
-after(async () => { 
+test('a specific note can be viwed', async() => {
+    const notesAtStart = await helper.notesInDb()
+
+    const noteToView = notesAtStart[0]
+
+    const resultNote = await api
+        .get(`/api/notes/${noteToView.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    assert.deepStrictEqual(resultNote.body, noteToView)
+})
+
+test('a specific note can be deleted', async() => {
+    const notesAtStart = await helper.notesInDb()
+    const noteDeleted = notesAtStart[0]
+
+    await api
+        .delete(`/api/notes/${noteDeleted.id}`)
+        .expect(204)
+
+    const notesAtEnd = await helper.notesInDb()
+
+    assert(!notesAtEnd.includes(noteDeleted))
+    assert.strictEqual(notesAtEnd.length, notesAtStart.length - 1)
+})
+
+after(async () => {
     await mongoose.connection.close()
 })
 
@@ -75,7 +102,7 @@ beforeEach(async() => {
 
     let noteObject = await Note(helper.initialNotes[0])
     await noteObject.save()
-    
+
     noteObject = await Note(helper.initialNotes[1])
     await noteObject.save()
 })

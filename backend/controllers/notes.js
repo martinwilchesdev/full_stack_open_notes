@@ -7,19 +7,19 @@ notesRouter.get('/', async(req, res) => {
     res.json(notes)
 })
 
-notesRouter.post('/', async(req, res) => {
-    const body = req.body?.content
+notesRouter.post('/', async(req, res, next) => {
+    const body = req.body
 
-    if (body) {
-        const note = new Note({
-            content: body,
-            important: body.important || false
-        })
+    const note = new Note({
+        content: body.content,
+        important: body.important || false
+    })
 
+    try {
         const savedNote = await note.save()
         res.status(201).json(savedNote)
-    } else {
-        res.status(400).json({error: "content field is required"})
+    } catch(error) {
+        next(error)
     }
 })
 
@@ -45,25 +45,25 @@ notesRouter.put('/:id', (req, res) => {
         })
 })
 
-notesRouter.delete('/:id', (req, res) => {
-    // el metodo findByIdAndDelete permite obtener un recurso individual a traves de su id y posteriormente eliminarlo
-    Note.findByIdAndDelete(req.params.id)
-        .then(result => {
-            logger.info('note deleted')
-            res.status(204).end()
-        })
-        .catch(error => {
-            logger.error('Error:', error.message)
-        })
+notesRouter.delete('/:id', async(req, res, next) => {
+    try {
+        // el metodo findByIdAndDelete permite obtener un recurso individual a traves de su id y posteriormente eliminarlo
+        await Note.findByIdAndDelete(req.params.id)
+        logger.info('note deleted')
+        res.status(204).end()
+    } catch(error) {
+        next(error)
+    }
 })
 
-notesRouter.get('/:id', (req, res, next) => {
-    // el metodo findById() permite obtener un recurso individual a traves de su id
-    Note.findById(req.params.id)
-        .then(result => {
-            res.json(result)
-        })
-        .catch(error => next(error))
+notesRouter.get('/:id', async(req, res, next) => {
+    try {
+        // el metodo findById() permite obtener un recurso individual a traves de su id
+        const note = await Note.findById(req.params.id)
+        res.json(note)
+    } catch(error) {
+        next(error)
+    }
 })
 
 module.exports = notesRouter

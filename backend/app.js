@@ -9,7 +9,7 @@ const app = express()
 
 const mongoose = require('mongoose')
 
-mongoose.set('strictQuery', false)
+mongoose.set('strictQuery', true)
 
 logger.info(`Connecting to mongodb...`)
 
