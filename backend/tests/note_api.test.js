@@ -100,9 +100,7 @@ after(async () => {
 beforeEach(async() => {
     await Note.deleteMany({})
 
-    let noteObject = await Note(helper.initialNotes[0])
-    await noteObject.save()
-
-    noteObject = await Note(helper.initialNotes[1])
-    await noteObject.save()
+    const noteObjects = helper.initialNotes.map(note => new Note(note))
+    const notesSaved = noteObjects.map(note => note.save())
+    await Promise.all(notesSaved)
 })
