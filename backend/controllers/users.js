@@ -1,11 +1,17 @@
 const usersRouter = require('express').Router()
 const bcrypt = require('bcrypt')
 
-const logger = require('../utils/logger')
 const User = require('../models/user')
 
 usersRouter.get('/', async(req, res) => {
-    const users = await User.find({})
+    /**
+     * El metodo populate se encadena despues de que el metodo find() realiza la consulta inicial.
+     * El argumento recibido por el metodo populate define que los ids que hacen referencias a objetos note en el campo notes del documentos user, seran reemplazados por los documentos de note referenciados.
+     * El metodo populate puede recibir un segundo parametro para elegir los campos que se quieron incluir de los documentos.
+     *      populate('notes', {content: 1, important: 1})
+    */
+    const users = await User.find({}).populate('notes', {content: 1, important: 1})
+
     res.json(users)
 })
 
