@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         unique: true
     },
     name: String,
-    passwordHash: String,
+    password: String,
     notes: [
         {
             type: mongoose.Schema.Types.ObjectId, // El tipo de campo ObjectId hace referencia a documentos de tipo Note
@@ -29,7 +29,7 @@ userSchema.set('toJSON', {
         delete obj._id
         delete obj.__v
         // El password hash no debe mostrarse
-        delete obj.passwordHash
+        // delete obj.passwordHash
     }
 })
 
