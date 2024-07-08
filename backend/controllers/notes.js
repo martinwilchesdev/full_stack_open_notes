@@ -1,4 +1,5 @@
 const notesRouter = require('express').Router()
+
 const logger = require('../utils/logger')
 const Note = require('../models/notes')
 
