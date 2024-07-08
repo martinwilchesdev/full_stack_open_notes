@@ -1,4 +1,4 @@
-const Note = require('../models/notes')
+const Note = require('../../models/notes')
 
 const initialNotes = [
     {

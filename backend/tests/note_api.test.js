@@ -1,4 +1,4 @@
-const helper = require('./test_helper')
+const helper = require('./helpers/note_helper')
 const app = require('../app')
 
 const Note = require('../models/notes')
