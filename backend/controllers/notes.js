@@ -26,7 +26,7 @@ notesRouter.post('/', async(req, res) => {
     /**
      * La validez del TOKEN se comprueba con `jwt.verify`.
      * El metodo jwt.verify decodifica el token o devuelve el objeto en que el que se baso el token.
-     * Si el token es invalido o esta ausente en la peticion, el servidor retorna un `JsonWebTokenError`
+     * Si el token es invalido o esta ausente en la peticion, el servidor retorna un `JsonWebTokenError`.
     */
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
 

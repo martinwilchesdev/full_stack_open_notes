@@ -66,35 +66,55 @@ describe('viewing a specific note', () => {
 })
 
 describe('addition of a new note', () => {
-    // test('succeeds with a valid data', async() => {
-    //     const newNote = {
-    //         content: 'async/await simplifies making async calls',
-    //         important: true
-    //     }
-
-    //     await api
-    //         .post('/api/notes')
-    //         .send(newNote)
-    //         .expect(201)
-    //         .expect('Content-Type', /application\/json/)
-
-    //     const notesAtEnd = await helper.notesInDb()
-    //     const contents = notesAtEnd.map(note => note.content)
-
-    //     assert(contents.includes('async/await simplifies making async calls'))
-    //     assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1)
-    // })
-
-    test('fails with status code 400 if data is invalid', async() => {
-        const notesAtStart = await helper.notesInDb()
+    test('succeeds with a valid data', async() => {
+        const authUser = await api
+            .post('/api/login')
+            .send({
+                username: 'dustinthewind',
+                password: 'sekret'
+            })
+            .expect(200)
 
         const newNote = {
-            important: false
+            content: 'async/await simplifies making async calls',
+            important: true,
+            userId: authUser.body.userid
         }
 
         await api
             .post('/api/notes')
             .send(newNote)
+            .set({ Authorization: `Bearer ${authUser.body.token}` })
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const notesAtEnd = await helper.notesInDb()
+        const contents = notesAtEnd.map(note => note.content)
+
+        assert(contents.includes('async/await simplifies making async calls'))
+        assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1)
+    })
+
+    test('fails with status code 400 if data is invalid', async() => {
+        const notesAtStart = await helper.notesInDb()
+
+        const authUser = await api
+            .post('/api/login')
+            .send({
+                username: 'dustinthewind',
+                password: 'sekret'
+            })
+            .expect(200)
+
+        const newNote = {
+            important: false,
+            userId: authUser.body.userid
+        }
+
+        await api
+            .post('/api/notes')
+            .send(newNote)
+            .set({ Authorization: `Bearer ${authUser.body.token}` })
             .expect(400)
 
         const notesAtEnd = await helper.notesInDb()
