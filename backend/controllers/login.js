@@ -31,7 +31,7 @@ loginRouter.post('/', async (req, res) => {
      * El TOKEN contiene el nombre de usuario y la id de usuario en un formato firmado digitalmente.
      * El valor de la variable de entorno SECRET puede ser cualquier string.
     */
-    const token = jwt.sign(userForToken, process.env.SECRET)
+    const token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 10 }) // expiresIn permite indicar el tiempo de validez del TOKEN en segundos
 
     /**
      * El TOKEN ha sido firmado digitalmente usando una cadena de variable de entorno `SECRET`.

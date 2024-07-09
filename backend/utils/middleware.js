@@ -8,23 +8,25 @@ const requestLogger = (req, res, next) => {
     next()
 }
 
-const unknownEndpoint = (req, res, ) => {
-    res.status(404).json({error: 'unknown endpoint'})
+const unknownEndpoint = (req, res,) => {
+    res.status(404).json({ error: 'unknown endpoint' })
 }
 
 const handleError = (error, req, res, next) => {
     logger.error(error.message)
 
     if (error.name === 'CastError') {
-        res.status(400).json({error: 'malformatted id'})
+        res.status(400).json({ error: 'malformatted id' })
     }
     // Las validaciones de mongoose no detectan la violacion del indice especifico y en lugar de ValidationError devuelve un error MongoServerError
     else if (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error')) {
-        res.status(400).json({error: 'expected `username` to be unique'})
+        return res.status(400).json({ error: 'expected `username` to be unique' })
     } else if (error.name === 'JsonWebTokenError') {
-        res.status(401).json({error: 'token invalid'})
+        return res.status(401).json({ error: 'token invalid' })
+    } else if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({ error: 'token expired' })
     } else {
-        res.status(400).json({error: error.message})
+        return res.status(400).json({ error: error.message })
     }
 }
 
