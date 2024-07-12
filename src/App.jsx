@@ -1,9 +1,11 @@
 // services
 import noteService from './services/notes'
+import loginService from './services/login'
 
 // components
 import Notification from './components/Notification'
 import NewNote from './components/NewNote'
+import Login from './components/Login'
 import Note from './components/Note'
 
 // hooks
@@ -13,6 +15,10 @@ const App = () => {
     const [notes, setNotes] = useState([])
     const [newNote, setNewNote] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+
+    // login state
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
 
     useEffect(() => {
         noteService.getAll().then((initialNotes) => {
@@ -67,11 +73,20 @@ const App = () => {
             })
     }
 
+    const handleLogin = (event) => {
+        event.preventDefault()
+        loginService.login(username, password)
+    }
+
     return (
         <div>
             <h1>Notes</h1>
             <Notification message={errorMessage} />
-            <NewNote onHandleNewNote={handleNewNote} onHandleAddNote={addNote} />
+            <Login
+                onHandleLogin={handleLogin}
+                onHandleUserName={setUsername}
+                onHandlePassword={setPassword}
+            />
             <ul>
                 {notes.map((note) => (
                     <Note
@@ -82,6 +97,7 @@ const App = () => {
                     />
                 ))}
             </ul>
+            <NewNote onHandleNewNote={handleNewNote} onHandleAddNote={addNote} />
         </div>
     )
 }
