@@ -1,6 +1,6 @@
 // services
-import noteService from './services/notes'
 import loginService from './services/login'
+import noteService from './services/notes'
 
 // components
 import Notification from './components/Notification'
@@ -25,6 +25,16 @@ const App = () => {
         noteService.getAll().then((initialNotes) => {
             setNotes(initialNotes)
         })
+    }, [])
+
+    // validar al ingresar a la aplicacion si existe una sesion de usuario activa
+    useEffect(() => {
+        const loggedUserJSON = localStorage.getItem('loggedUserNotesApp')
+        if (loggedUserJSON) {
+            const user = JSON.parse(loggedUserJSON)
+            noteService.setToken(user.token)
+            setUser(user)
+        }
     }, [])
 
     const handleNewNote = (event) => {
@@ -74,15 +84,19 @@ const App = () => {
             })
     }
 
-    const handleLogin = async(event) => {
+    const handleLogin = async (event) => {
         event.preventDefault()
 
         try {
             const user = await loginService.login(username, password)
-            setUser(user)
+
+            localStorage.setItem('loggedUserNotesApp', JSON.stringify(user))
+
+            noteService.setToken(user.token)
             setUsername('')
             setPassword('')
-        } catch(e) {
+            setUser(user)
+        } catch (e) {
             setErrorMessage('Wrong Credentials')
             setTimeout(() => {
                 setErrorMessage('')
@@ -96,21 +110,21 @@ const App = () => {
             <Notification message={errorMessage} />
             {
                 user === null ?
-                <Login
-                    onHandleLogin={handleLogin}
-                    onHandleUserName={setUsername}
-                    onHandlePassword={setPassword}
-                    username={username}
-                    password={password}
-                /> :
-                <div>
-                    <p>{user.name} logged-in</p>
-                    <NewNote
-                        onHandleNewNote={handleNewNote}
-                        onHandleAddNote={addNote}
-                        newNote={newNote}
-                    />
-                </div>
+                    <Login
+                        onHandleLogin={handleLogin}
+                        onHandleUserName={setUsername}
+                        onHandlePassword={setPassword}
+                        username={username}
+                        password={password}
+                    /> :
+                    <div>
+                        <p>{user.name} logged-in</p>
+                        <NewNote
+                            onHandleNewNote={handleNewNote}
+                            onHandleAddNote={addNote}
+                            newNote={newNote}
+                        />
+                    </div>
             }
             <ul>
                 {notes.map((note) => (

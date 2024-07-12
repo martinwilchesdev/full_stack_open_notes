@@ -28,16 +28,16 @@ notesRouter.post('/', async(req, res) => {
      * El metodo jwt.verify decodifica el token o devuelve el objeto en que el que se baso el token.
      * Si el token es invalido o esta ausente en la peticion, el servidor retorna un `JsonWebTokenError`.
     */
-    const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
+    const userAuth = jwt.verify(getTokenFrom(req), process.env.SECRET)
 
     // El objeto decodificado contiene los campos username e id que le dicen al servidor que usuario hizo la solicitud
-    if (!decodedToken.id) return res.status(401).json({error: 'token invalid'})
+    if (!userAuth.id) return res.status(401).json({error: 'token invalid'})
 
-    const user = await User.findById(body.userId)
+    const user = await User.findById(userAuth.id)
 
     const note = new Note({
-        content: body.content,
         important: body.important || false,
+        content: body.content,
         user: user.id
     })
 
