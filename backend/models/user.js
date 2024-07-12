@@ -29,7 +29,7 @@ userSchema.set('toJSON', {
         delete obj._id
         delete obj.__v
         // El password hash no debe mostrarse
-        // delete obj.passwordHash
+        delete obj.password
     }
 })
 

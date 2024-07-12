@@ -1,7 +1,7 @@
-const NewNote = ({ onHandleNewNote, onHandleAddNote }) => {
+const NewNote = ({ onHandleNewNote, onHandleAddNote, newNote }) => {
     return (
         <div>
-            <input onChange={onHandleNewNote} />
+            <input onChange={onHandleNewNote} value={newNote} />
             <button onClick={onHandleAddNote}>add note</button>
         </div>
     )

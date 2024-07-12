@@ -5,12 +5,12 @@ const Login = (props) => {
     return (
         <form onSubmit={props.onHandleLogin}>
             <div>
-                <label>username</label>
-                <input onChange={handleUsername} />
+                <label>username:</label>
+                <input onChange={handleUsername} value={props.username} />
             </div>
             <div>
-                <label>password</label>
-                <input onChange={handlePassword} type="password" />
+                <label>password:</label>
+                <input onChange={handlePassword} value={props.password} type="password" />
             </div>
             <button type="submit">login</button>
         </form>

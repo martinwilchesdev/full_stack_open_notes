@@ -17,6 +17,7 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState('')
 
     // login state
+    const [user, setUser] = useState(null)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
@@ -73,20 +74,44 @@ const App = () => {
             })
     }
 
-    const handleLogin = (event) => {
+    const handleLogin = async(event) => {
         event.preventDefault()
-        loginService.login(username, password)
+
+        try {
+            const user = await loginService.login(username, password)
+            setUser(user)
+            setUsername('')
+            setPassword('')
+        } catch(e) {
+            setErrorMessage('Wrong Credentials')
+            setTimeout(() => {
+                setErrorMessage('')
+            }, 3000)
+        }
     }
 
     return (
         <div>
             <h1>Notes</h1>
             <Notification message={errorMessage} />
-            <Login
-                onHandleLogin={handleLogin}
-                onHandleUserName={setUsername}
-                onHandlePassword={setPassword}
-            />
+            {
+                user === null ?
+                <Login
+                    onHandleLogin={handleLogin}
+                    onHandleUserName={setUsername}
+                    onHandlePassword={setPassword}
+                    username={username}
+                    password={password}
+                /> :
+                <div>
+                    <p>{user.name} logged-in</p>
+                    <NewNote
+                        onHandleNewNote={handleNewNote}
+                        onHandleAddNote={addNote}
+                        newNote={newNote}
+                    />
+                </div>
+            }
             <ul>
                 {notes.map((note) => (
                     <Note
@@ -97,7 +122,6 @@ const App = () => {
                     />
                 ))}
             </ul>
-            <NewNote onHandleNewNote={handleNewNote} onHandleAddNote={addNote} />
         </div>
     )
 }
