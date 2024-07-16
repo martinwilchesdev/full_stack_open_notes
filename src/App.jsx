@@ -15,6 +15,7 @@ const App = () => {
     const [notes, setNotes] = useState([])
     const [newNote, setNewNote] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    const [loginVisible, setLoginVisible] = useState(false)
 
     // login state
     const [user, setUser] = useState(null)
@@ -111,9 +112,11 @@ const App = () => {
             {
                 user === null ?
                     <Login
-                        onHandleLogin={handleLogin}
+                        onHandleLoginVisible={setLoginVisible}
                         onHandleUserName={setUsername}
                         onHandlePassword={setPassword}
+                        onHandleLogin={handleLogin}
+                        loginVisible={loginVisible}
                         username={username}
                         password={password}
                     /> :
