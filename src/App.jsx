@@ -3,6 +3,7 @@ import loginService from './services/login'
 import noteService from './services/notes'
 
 // components
+import ToggableButton from './components/ToggableButton'
 import Notification from './components/Notification'
 import NewNote from './components/NewNote'
 import Login from './components/Login'
@@ -111,15 +112,19 @@ const App = () => {
             <Notification message={errorMessage} />
             {
                 user === null ?
-                    <Login
+                    <ToggableButton
                         onHandleLoginVisible={setLoginVisible}
-                        onHandleUserName={setUsername}
-                        onHandlePassword={setPassword}
-                        onHandleLogin={handleLogin}
                         loginVisible={loginVisible}
-                        username={username}
-                        password={password}
-                    /> :
+                    >
+                        <Login
+                            onHandleUserName={setUsername}
+                            onHandlePassword={setPassword}
+                            onHandleLogin={handleLogin}
+                            loginVisible={loginVisible}
+                            username={username}
+                            password={password}
+                        />
+                    </ToggableButton> :
                     <div>
                         <p>{user.name} logged-in</p>
                         <NewNote
