@@ -1,5 +1,4 @@
 // services
-import loginService from './services/login'
 import noteService from './services/notes'
 
 // components
@@ -14,20 +13,11 @@ import { useEffect, useState } from 'react'
 
 const App = () => {
     const [notes, setNotes] = useState([])
-    const [newNote, setNewNote] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [loginVisible, setLoginVisible] = useState(false)
 
     // login state
     const [user, setUser] = useState(null)
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-
-    useEffect(() => {
-        noteService.getAll().then((initialNotes) => {
-            setNotes(initialNotes)
-        })
-    }, [])
 
     // validar al ingresar a la aplicacion si existe una sesion de usuario activa
     useEffect(() => {
@@ -39,23 +29,11 @@ const App = () => {
         }
     }, [])
 
-    const handleNewNote = (event) => {
-        setNewNote(event.target.value)
-    }
-
-    const addNote = (event) => {
-        event.preventDefault()
-
-        noteService
-            .create({
-                content: newNote,
-                important: Math.random() < 0.5
-            })
-            .then((newNote) => {
-                setNotes(notes.concat(newNote))
-                setNewNote('')
-            })
-    }
+    useEffect(() => {
+        noteService.getAll().then((initialNotes) => {
+            setNotes(initialNotes)
+        })
+    }, [])
 
     const toggleImportance = (note) => {
         noteService
@@ -86,26 +64,6 @@ const App = () => {
             })
     }
 
-    const handleLogin = async (event) => {
-        event.preventDefault()
-
-        try {
-            const user = await loginService.login(username, password)
-
-            localStorage.setItem('loggedUserNotesApp', JSON.stringify(user))
-
-            noteService.setToken(user.token)
-            setUsername('')
-            setPassword('')
-            setUser(user)
-        } catch (e) {
-            setErrorMessage('Wrong Credentials')
-            setTimeout(() => {
-                setErrorMessage('')
-            }, 3000)
-        }
-    }
-
     return (
         <div>
             <h1>Notes</h1>
@@ -117,20 +75,16 @@ const App = () => {
                         loginVisible={loginVisible}
                     >
                         <Login
-                            onHandleUserName={setUsername}
-                            onHandlePassword={setPassword}
-                            onHandleLogin={handleLogin}
+                            onHandleErrorMessage={setErrorMessage}
                             loginVisible={loginVisible}
-                            username={username}
-                            password={password}
+                            onHandleUser={setUser}
                         />
                     </ToggableButton> :
                     <div>
                         <p>{user.name} logged-in</p>
                         <NewNote
-                            onHandleNewNote={handleNewNote}
-                            onHandleAddNote={addNote}
-                            newNote={newNote}
+                            onHandleNotes={setNotes}
+                            notes={notes}
                         />
                     </div>
             }
