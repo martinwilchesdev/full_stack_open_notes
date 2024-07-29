@@ -1,3 +1,6 @@
+// store
+import { createStore } from 'redux'
+
 // services
 import noteService from './services/notes'
 
@@ -10,6 +13,51 @@ import Note from './components/Note'
 
 // hooks
 import { useEffect, useState } from 'react'
+
+const noteReducer = (state = [], action) => {
+    switch(action.type) {
+        case 'NEW_NOTE':
+            return [...state, action.payload]
+        case 'TOGGLE_IMPORTANCE':
+            let newNote = state.find(note => note.id === action.payload.id)
+            newNote = {
+                ...newNote,
+                important: !newNote.important
+            }
+
+            return state.map(note => note.id === newNote.id ? newNote : note)
+        default:
+            return state
+    }
+}
+
+const store = createStore(noteReducer)
+
+// Por convencion es que las acciones tengan 2 campos exactamente, type diciendo el tipo y payload conteniendo los datos incluidos en la peticion
+store.dispatch({
+    type: 'NEW_NOTE',
+    payload: {
+        content: 'JS for web development',
+        important: true,
+        id: 1
+    }
+})
+
+store.dispatch({
+    type: 'NEW_NOTE',
+    payload: {
+        content: 'HTML is easy',
+        important: false,
+        id: 2
+    }
+})
+
+store.dispatch({
+    type: 'TOGGLE_IMPORTANCE',
+    payload: {
+        id: 2
+    }
+})
 
 const App = () => {
     const [notes, setNotes] = useState([])
@@ -89,7 +137,7 @@ const App = () => {
                     </div>
             }
             <ul>
-                {notes.map((note) => (
+                {store.getState().map((note) => (
                     <Note
                         key={note.id}
                         note={note}
